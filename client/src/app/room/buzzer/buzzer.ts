@@ -3,7 +3,7 @@ import type { BuzzWindowView, RoomView } from '@shared/protocol';
 import { GameSocket } from '../../core/game-socket';
 import { Countdown } from '../countdown/countdown';
 
-type BuzzerState = 'waiting' | 'their-head-start' | 'open' | 'mine' | 'theirs' | 'locked-out' | 'done';
+type BuzzerState = 'waiting' | 'their-head-start' | 'open' | 'mine' | 'theirs' | 'correct' | 'wrong' | 'locked-out' | 'done';
 
 /** The player's buzzer, for board clues and tiebreakers alike. */
 @Component({
@@ -24,6 +24,9 @@ export class Buzzer {
   protected readonly status = computed<BuzzerState>(() => {
     const round = this.round();
     const me = this.myId();
+    // Your own result wins over everything else.
+    if (me && round.correctPlayerId === me) return 'correct';
+    if (me && round.wrongPlayerIds.includes(me)) return 'wrong';
     if (round.phase === 'revealed') return 'done';
     if (me && round.lockedOutPlayerIds.includes(me)) return 'locked-out';
     if (round.phase === 'answering') return round.buzzedPlayerId === me ? 'mine' : 'theirs';
@@ -57,8 +60,12 @@ export class Buzzer {
         return "You're in! Say your answer out loud.";
       case 'theirs':
         return `${nameOf(round.buzzedPlayerId)} got there first`;
+      case 'correct':
+        return 'You got it!';
+      case 'wrong':
+        return "Not quite. You're out on this one.";
       case 'locked-out':
-        return "You're out on this one";
+        return "Time's up. You're out on this one.";
       case 'done':
         return 'Answer revealed';
     }

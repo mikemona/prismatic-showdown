@@ -73,9 +73,15 @@
                   @if (s.final; as final) {
                     <app-final-stage [final]="final" [players]="s.players" />
                   } @else if (s.tiebreaker; as tb) {
-                    <app-clue-stage [tiebreaker]="tb" [players]="s.players" />
+                    <app-clue-stage [tiebreaker]="tb" [players]="s.players" [isHost]="s.you.role === 'host'" [meId]="s.you.playerId" />
                   } @else if (s.activeClue; as clue) {
-                    <app-clue-stage [clue]="clue" [players]="s.players" [isHost]="s.you.role === 'host'" />
+                    <app-clue-stage
+                      [clue]="clue"
+                      [players]="s.players"
+                      [isHost]="s.you.role === 'host'"
+                      [meId]="s.you.playerId"
+                      [negativeScoring]="s.settings.negativeScoring"
+                    />
                   } @else {
                     <app-board [state]="s" />
                   }

@@ -46,6 +46,8 @@ interface BuzzRound {
   buzzersOpenAt: number | null;
   priorityPlayerId: string | null;
   buzzEndsAt: number | null;
+  correctPlayerId: string | null;
+  wrong: Set<string>;
 }
 
 interface ActiveClue {
@@ -438,6 +440,8 @@ export class Room {
       // Daily Double: win or lose the wager, like the show, and nobody else can steal it.
       const wager = active.dailyDouble.wager ?? 0;
       player.score += correct ? wager : -wager;
+      if (correct) round.correctPlayerId = player.id;
+      else round.wrong.add(player.id);
       round.phase = 'revealed';
       active.timerEndsAt = null;
       return;
@@ -446,6 +450,7 @@ export class Room {
     if (correct) {
       player.score += value;
       this.controlPlayerId = player.id;
+      round.correctPlayerId = player.id;
       round.phase = 'revealed';
       active.timerEndsAt = null;
       return;
@@ -454,6 +459,7 @@ export class Room {
     // Wrong: lose the points, keep the answer hidden, and let everyone else try to steal.
     if (this.settings.negativeScoring) player.score -= value;
     round.lockedOut.add(player.id);
+    round.wrong.add(player.id);
     round.buzzedPlayerId = null;
     round.phase = this.canAnyoneBuzz(round) ? 'buzzing' : 'revealed';
   }
@@ -622,10 +628,12 @@ export class Room {
     if (round.phase !== 'answering' || !round.buzzedPlayerId) throw new GameError('Nobody is answering right now.');
     if (correct) {
       tb.winnerId = round.buzzedPlayerId;
+      round.correctPlayerId = round.buzzedPlayerId;
       round.phase = 'revealed';
       return;
     }
     round.lockedOut.add(round.buzzedPlayerId);
+    round.wrong.add(round.buzzedPlayerId);
     round.buzzedPlayerId = null;
     if (this.canAnyoneBuzz(round)) this.openTiebreakerWindow(tb);
     else round.phase = 'revealed';
@@ -852,6 +860,8 @@ export class Room {
       buzzersOpenAt: round.buzzersOpenAt,
       priorityPlayerId: round.priorityPlayerId,
       buzzEndsAt: round.buzzEndsAt,
+      correctPlayerId: round.correctPlayerId,
+      wrongPlayerIds: [...round.wrong],
     };
   }
 
@@ -939,6 +949,8 @@ export class Room {
       buzzersOpenAt: Date.now() + readMs,
       priorityPlayerId: null,
       buzzEndsAt: null,
+      correctPlayerId: null,
+      wrong: new Set(),
     };
   }
 

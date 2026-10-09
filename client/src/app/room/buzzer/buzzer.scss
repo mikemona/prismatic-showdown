@@ -17,6 +17,25 @@
     --buzzer-text: var(--pp-bg);
   }
 
+  // Card border echoes the result, like the clue panel.
+  &--mine {
+    border-color: var(--pp-value);
+  }
+
+  &--correct {
+    --buzzer-color: var(--pp-green);
+    --buzzer-text: #052417;
+
+    border-color: var(--pp-green);
+  }
+
+  &--wrong {
+    --buzzer-color: #4a1622;
+    --buzzer-text: var(--pp-red);
+
+    border-color: var(--pp-red);
+  }
+
   &--their-head-start {
     --buzzer-text: var(--pp-text-muted);
   }
@@ -95,6 +114,14 @@
 
     .buzzer--mine & {
       color: var(--pp-value);
+    }
+
+    .buzzer--correct & {
+      color: var(--pp-green);
+    }
+
+    .buzzer--wrong & {
+      color: var(--pp-red);
     }
   }
 }

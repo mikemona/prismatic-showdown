@@ -8,12 +8,23 @@
   box-shadow: var(--pp-shadow);
   overflow: hidden;
 
-  &--buzzing {
-    box-shadow: 0 0 0 3px var(--pp-green), var(--pp-shadow);
+  // Border color follows the viewer's point of view (see ClueStage.tone).
+  --clue-tone: var(--pp-blue);
+
+  position: relative;
+  box-shadow: 0 0 0 3px var(--clue-tone), var(--pp-shadow);
+  transition: box-shadow 200ms;
+
+  &--tone-yellow {
+    --clue-tone: var(--pp-value);
   }
 
-  &--answering {
-    box-shadow: 0 0 0 3px var(--pp-value), var(--pp-shadow);
+  &--tone-green {
+    --clue-tone: var(--pp-green);
+  }
+
+  &--tone-red {
+    --clue-tone: var(--pp-red);
   }
 
   &__head {
@@ -129,11 +140,13 @@
     font-weight: 600;
 
     .clue-stage--buzzing & {
-      color: var(--pp-green);
+      color: var(--pp-blue);
     }
 
-    .clue-stage--answering & {
-      color: var(--pp-value);
+    .clue-stage--tone-yellow &,
+    .clue-stage--tone-green &,
+    .clue-stage--tone-red & {
+      color: var(--clue-tone);
       font-size: 20px;
     }
   }

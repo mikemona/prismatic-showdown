@@ -1,4 +1,7 @@
-<article class="clue-stage" [class]="'clue-stage--' + round().phase">
+<article class="clue-stage" [class]="'clue-stage--' + round().phase + ' clue-stage--tone-' + tone()">
+  @if (celebrate()) {
+    <app-confetti />
+  }
   <header class="clue-stage__head">
     @if (clue(); as c) {
       <div class="clue-stage__meta">

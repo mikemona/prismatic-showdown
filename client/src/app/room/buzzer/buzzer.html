@@ -3,6 +3,10 @@
     <span class="buzzer__label">
       @if (status() === 'mine') {
         <span class="buzzer__label-text buzzer__label-text--in">You're in!</span>
+      } @else if (status() === 'correct') {
+        <span class="buzzer__label-text buzzer__label-text--in">Correct!</span>
+      } @else if (status() === 'wrong') {
+        <span class="buzzer__label-text buzzer__label-text--in">Wrong</span>
       } @else if (countdownTo(); as endsAt) {
         <app-countdown class="buzzer__label-text" [endsAt]="endsAt" size="inline" />
       } @else {

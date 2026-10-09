@@ -125,6 +125,10 @@ export interface BuzzWindowView {
   priorityPlayerId: string | null;
   /** When the current buzz window closes (head start, or tiebreaker window). */
   buzzEndsAt: number | null;
+  /** Who answered correctly, once someone has. */
+  correctPlayerId: string | null;
+  /** Who answered wrong (unlike lockedOutPlayerIds, this excludes a picker whose head start ran out). */
+  wrongPlayerIds: string[];
 }
 
 export interface ActiveClueView extends BuzzWindowView {
