@@ -1,0 +1,32 @@
+<header class="room-header">
+  <div class="room-header__brand">
+    <a class="room-header__title" routerLink="/">{{ state().boardTitle }}</a>
+    <button
+      class="room-header__code"
+      type="button"
+      [class.room-header__code--copied]="invite.copied()"
+      (click)="invite.copy(state().code)"
+      title="Copy invite link"
+    >
+      <span class="pp-sr-only">Room code</span>
+      {{ state().code }}
+      @if (invite.copied()) {
+        <span class="room-header__copy room-header__copy--done">✓ Copied</span>
+      } @else {
+        <span class="room-header__copy" aria-hidden="true">⧉</span>
+        <span class="pp-sr-only">, copy invite link</span>
+      }
+    </button>
+    <span class="pp-sr-only" role="status">{{ invite.copied() ? 'Invite link copied' : '' }}</span>
+  </div>
+
+  <div class="room-header__meta">
+    @if (!connected()) {
+      <span class="room-header__status room-header__status--offline" role="status">Reconnecting…</span>
+    } @else if (!state().hostConnected && state().you.role === 'player') {
+      <span class="room-header__status" role="status">Waiting for the host to reconnect</span>
+    }
+    <span class="room-header__you">{{ youLabel() }}</span>
+  </div>
+</header>
+<div class="pp-prism-bar room-header__bar"></div>

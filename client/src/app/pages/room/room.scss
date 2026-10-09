@@ -1,0 +1,70 @@
+.room-gate {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 16px;
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: min(440px, 100%);
+
+    .pp-card__subtitle {
+      margin-bottom: 0;
+    }
+  }
+
+  &__bar {
+    width: 64px;
+  }
+
+  &__loading {
+    color: var(--pp-text-muted);
+  }
+}
+
+.room {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  &__lobby {
+    flex: 1;
+  }
+
+  &__play {
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 20px;
+    padding: 20px;
+
+    @media (max-width: 900px) {
+      grid-template-columns: minmax(0, 1fr);
+      padding: 16px;
+    }
+  }
+
+  &__stage {
+    min-width: 0;
+  }
+
+  &__note {
+    margin: 0;
+    padding: 16px 20px;
+    color: var(--pp-text-muted);
+
+    &--you {
+      border-color: var(--pp-value);
+      color: var(--pp-value);
+      font-weight: 700;
+    }
+  }
+
+  &__side {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+}

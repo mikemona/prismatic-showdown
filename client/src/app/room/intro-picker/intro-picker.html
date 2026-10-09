@@ -1,0 +1,47 @@
+<main class="intro">
+  <section class="pp-card intro__card" aria-labelledby="intro-title">
+    <div class="pp-prism-bar intro__bar"></div>
+    <h1 class="intro__title" id="intro-title">Who picks first?</h1>
+
+    <ul class="intro__players">
+      @for (player of state().players; track player.id) {
+        <li
+          class="intro__player"
+          [class.intro__player--lit]="player.id === highlightedId()"
+          [class.intro__player--chosen]="player.id === intro().firstPlayerId"
+          [style.--player-color]="'var(--pp-' + player.color + ')'"
+        >
+          <span class="intro__avatar" aria-hidden="true">{{ player.name.charAt(0) }}</span>
+          <span class="intro__name">{{ player.name }}</span>
+        </li>
+      }
+    </ul>
+
+    <div class="intro__result" role="status">
+      @if (firstName(); as name) {
+        @if (intro().champion) {
+          <p class="intro__announce">
+            <app-golden-prism [size]="44" [glow]="false" />
+            {{ name }} holds the Golden Prism, so they pick first!
+          </p>
+        } @else {
+          <p class="intro__announce">{{ name }} picks first!</p>
+        }
+      } @else if (spinning()) {
+        <p class="intro__hint">Choosing…</p>
+      } @else if (!isHost()) {
+        <p class="intro__hint">Waiting for {{ state().hostName }} to choose who goes first…</p>
+      }
+    </div>
+
+    @if (isHost()) {
+      @if (intro().firstPlayerId) {
+        <button class="pp-btn pp-btn--success pp-btn--block" type="button" (click)="game.beginBoard()">Start the game</button>
+      } @else {
+        <button class="pp-btn pp-btn--primary pp-btn--block" type="button" [disabled]="!!intro().spin" (click)="game.spin()">
+          {{ intro().spin ? 'Choosing…' : 'Pick who goes first' }}
+        </button>
+      }
+    }
+  </section>
+</main>

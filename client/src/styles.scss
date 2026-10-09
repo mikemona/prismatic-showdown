@@ -1,0 +1,282 @@
+// Prismatic Showdown global styles: tokens, base, and the few shared primitives
+// (buttons, fields, cards) every screen uses. Component styles live with
+// their components.
+
+:root {
+  @font-face {
+    font-family: 'Geoparty';
+    src: url('../../shared/fonts/geoparody/Geoparody-Hv.otf');
+  }
+
+  color-scheme: dark;
+
+  // Surfaces
+  --pp-bg: #0b0d1f;
+  --pp-bg-glow: #1b1f4b;
+  --pp-surface: #151838;
+  --pp-surface-raised: #1d2150;
+  --pp-border: #2c3170;
+
+  // Text
+  --pp-text: #f2f3ff;
+  --pp-text-muted: #a3a8d6;
+  --pp-text-faint: #6f74a8;
+
+  // Board
+  --pp-cell: #1f2fa3;
+  --pp-cell-hover: #2a3cc4;
+  --pp-cell-used: #12163a;
+  --pp-value: #ffc94a;
+
+  // Prism accents
+  --pp-red: #ff5d73;
+  --pp-orange: #ff9f45;
+  --pp-yellow: #ffd84a;
+  --pp-green: #3ddc97;
+  --pp-blue: #4cc9ff;
+  --pp-violet: #a77bff;
+  --pp-prism: linear-gradient(
+    90deg,
+    var(--pp-red),
+    var(--pp-orange),
+    var(--pp-yellow),
+    var(--pp-green),
+    var(--pp-blue),
+    var(--pp-violet)
+  );
+  // Same spectrum, ending where it starts, so it can tile and scroll seamlessly.
+  --pp-prism-loop: linear-gradient(
+    90deg,
+    var(--pp-red),
+    var(--pp-orange),
+    var(--pp-yellow),
+    var(--pp-green),
+    var(--pp-blue),
+    var(--pp-violet),
+    var(--pp-red)
+  );
+
+  // Semantic
+  --pp-primary: var(--pp-blue);
+  --pp-success: var(--pp-green);
+  --pp-danger: var(--pp-red);
+  --pp-focus: #ffffff;
+
+  --pp-radius-sm: 8px;
+  --pp-radius: 14px;
+  --pp-radius-lg: 22px;
+  --pp-shadow: 0 12px 32px rgb(0 0 0 / 0.35);
+
+  --pp-font: 'Inter', system-ui, sans-serif;
+  --pp-font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  --pp-font-title: 'Geoparty', 'Inter', system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background:
+    radial-gradient(1200px 600px at 50% -10%, var(--pp-bg-glow), transparent 70%), var(--pp-bg);
+  background-attachment: fixed;
+  color: var(--pp-text);
+  font-family: var(--pp-font);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--pp-font-display);
+  line-height: 1.15;
+  margin: 0;
+}
+
+:focus-visible {
+  outline: 3px solid var(--pp-focus);
+  outline-offset: 2px;
+}
+
+.pp-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+// --- buttons -------------------------------------------------------------
+
+.pp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 18px;
+  border: 1px solid var(--pp-border);
+  border-radius: var(--pp-radius-sm);
+  background: var(--pp-surface-raised);
+  color: var(--pp-text);
+  font: 600 15px/1 var(--pp-font);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background 120ms,
+    transform 80ms,
+    border-color 120ms;
+
+  &:hover:not(:disabled) {
+    border-color: var(--pp-text-faint);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  &--primary {
+    border-color: transparent;
+    background: var(--pp-primary);
+    color: #06122a;
+  }
+
+  &--success {
+    border-color: transparent;
+    background: var(--pp-success);
+    color: #052417;
+  }
+
+  &--danger {
+    border-color: transparent;
+    background: var(--pp-danger);
+    color: #2a0610;
+  }
+
+  &--ghost {
+    background: transparent;
+  }
+
+  &--sm {
+    min-height: 32px;
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  &--block {
+    width: 100%;
+  }
+}
+
+// --- form fields ---------------------------------------------------------
+
+.pp-field {
+  display: grid;
+  gap: 6px;
+
+  &__label {
+    color: var(--pp-text-muted);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  &__input {
+    min-height: 48px;
+    padding: 10px 14px;
+    border: 1px solid var(--pp-border);
+    border-radius: var(--pp-radius-sm);
+    background: var(--pp-bg);
+    color: var(--pp-text);
+    font: 500 17px var(--pp-font);
+
+    &::placeholder {
+      color: var(--pp-text-faint);
+    }
+
+    &--code {
+      font-family: var(--pp-font-display);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+    }
+  }
+
+  &__error {
+    color: var(--pp-red);
+    font-size: 14px;
+  }
+}
+
+// --- cards ---------------------------------------------------------------
+
+.pp-card {
+  border: 1px solid var(--pp-border);
+  border-radius: var(--pp-radius);
+  background: var(--pp-surface);
+  box-shadow: var(--pp-shadow);
+  padding: 24px;
+
+  &__title {
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+
+  &__subtitle {
+    margin: 0 0 20px;
+    color: var(--pp-text-muted);
+  }
+}
+
+// Moving spectrum fill, shared by the bars and the logo.
+%pp-prism-flow {
+  background: var(--pp-prism-loop);
+  background-size: 200% 100%;
+  animation: pp-prism-flow 6s linear infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+.pp-prism-bar {
+  @extend %pp-prism-flow;
+
+  height: 4px;
+  border-radius: 4px;
+}
+
+// Prismatic logo shape filled with the moving spectrum. Size it with width.
+.pp-prism-logo {
+  @extend %pp-prism-flow;
+
+  display: block;
+  aspect-ratio: 33 / 30;
+  // Bundled from shared/ by the build.
+  mask: url('../../shared/prismatic-logo.svg') center / contain no-repeat;
+}
+
+// With a 200%-wide tile, -200% shifts it exactly one tile to the right: a seamless left-to-right loop.
+@keyframes pp-prism-flow {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
+}

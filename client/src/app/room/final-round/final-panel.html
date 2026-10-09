@@ -1,0 +1,123 @@
+<section class="pp-card final-panel" [class.final-panel--host]="isHost()" aria-labelledby="final-panel-title">
+  @if (isHost()) {
+    <h2 class="final-panel__title" id="final-panel-title">Host controls</h2>
+
+    @switch (final().phase) {
+      @case ('wager') {
+        <p class="final-panel__hint">
+          {{ wageredCount() }} of {{ final().entries.length }} wagers locked in. Anyone who hasn't wagered bets 0.
+        </p>
+        <button class="pp-btn pp-btn--primary pp-btn--block" type="button" (click)="game.finalShowQuestion()">Show the question</button>
+      }
+      @case ('answer') {
+        <p class="final-panel__hint">
+          {{ answeredCount() }} of {{ final().entries.length }} have typed an answer. Answers lock automatically when time runs out.
+        </p>
+        <button class="pp-btn pp-btn--block" type="button" (click)="game.finalLock()">Lock answers now</button>
+      }
+      @case ('judging') {
+        @if (current(); as c) {
+          <div class="final-panel__current">
+            <p class="final-panel__who">{{ c.name }}</p>
+            <dl class="final-panel__facts">
+              <dt>Wager</dt>
+              <dd>{{ c.entry.wager ?? 0 }}</dd>
+              <dt>Answer</dt>
+              <dd>{{ c.entry.answer || '(no answer)' }}</dd>
+            </dl>
+          </div>
+          @if (!c.entry.revealed) {
+            <button class="pp-btn pp-btn--primary pp-btn--block" type="button" (click)="game.finalReveal()">
+              Reveal {{ c.name }}'s answer
+            </button>
+          } @else {
+            <div class="final-panel__judge">
+              <button class="pp-btn pp-btn--success" type="button" (click)="game.finalJudge(true)">Correct +{{ c.entry.wager ?? 0 }}</button>
+              <button class="pp-btn pp-btn--danger" type="button" (click)="game.finalJudge(false)">Wrong −{{ c.entry.wager ?? 0 }}</button>
+            </div>
+          }
+        }
+        <p class="final-panel__answer">Correct answer: <strong>{{ final().answer }}</strong></p>
+      }
+      @case ('done') {
+        @if (leaders().length > 1) {
+          <p class="final-panel__hint">
+            First place is tied between {{ leaderNames() }}. Time for a tiebreaker!
+          </p>
+          <button class="pp-btn pp-btn--primary pp-btn--block" type="button" (click)="game.finalFinish()">Start the tiebreaker</button>
+        } @else {
+          <p class="final-panel__hint">Every answer is judged.</p>
+          <button class="pp-btn pp-btn--success pp-btn--block" type="button" (click)="game.finalFinish()">
+            Award {{ leaders()[0]?.name ?? 'the winner' }} the Golden Prism
+          </button>
+        }
+      }
+    }
+  } @else if (myEntry(); as entry) {
+    <h2 class="final-panel__title" id="final-panel-title">Your final</h2>
+
+    @switch (final().phase) {
+      @case ('wager') {
+        <form class="final-panel__form" (ngSubmit)="submitWager()">
+          <label class="pp-field">
+            <span class="pp-field__label">Your wager (0–{{ maxWager() }})</span>
+            <input
+              class="pp-field__input"
+              type="number"
+              name="wager"
+              inputmode="numeric"
+              min="0"
+              [max]="maxWager()"
+              step="1"
+              [ngModel]="wagerInput()"
+              (ngModelChange)="wagerInput.set($event)"
+            />
+          </label>
+          <button class="pp-btn pp-btn--primary pp-btn--block" type="submit">
+            {{ entry.wagered ? 'Update wager' : 'Lock in wager' }}
+          </button>
+        </form>
+        @if (entry.wagered) {
+          <p class="final-panel__locked" role="status">✓ Locked in: {{ entry.wager }}</p>
+        }
+        @if (maxWager() === 0) {
+          <p class="final-panel__hint">You don't have any points to bet, but you can still answer.</p>
+        }
+      }
+      @case ('answer') {
+        <label class="pp-field">
+          <span class="pp-field__label">Your answer</span>
+          <textarea
+            class="pp-field__input final-panel__textarea"
+            rows="3"
+            maxlength="200"
+            [value]="currentAnswer()"
+            (input)="onAnswerInput($any($event.target).value)"
+          ></textarea>
+        </label>
+        <p class="final-panel__hint" role="status">
+          {{ saved() ? 'Saved. Keep editing until time runs out.' : 'Saving…' }}
+        </p>
+        <p class="final-panel__hint">Your wager: {{ entry.wager }}</p>
+      }
+      @default {
+        <dl class="final-panel__facts">
+          <dt>Wager</dt>
+          <dd>{{ entry.wager }}</dd>
+          <dt>Answer</dt>
+          <dd>{{ entry.answer || '(no answer)' }}</dd>
+        </dl>
+        @if (entry.correct !== null) {
+          <p class="final-panel__result" [class.final-panel__result--wrong]="!entry.correct">
+            {{ entry.correct ? 'Correct! +' + entry.wager : 'Not quite. −' + entry.wager }}
+          </p>
+        } @else {
+          <p class="final-panel__hint">Waiting for the host to reveal your answer…</p>
+        }
+      }
+    }
+  } @else {
+    <h2 class="final-panel__title" id="final-panel-title">Final round</h2>
+    <p class="final-panel__hint">You joined after the final round started, so you're watching this one.</p>
+  }
+</section>

@@ -1,0 +1,14 @@
+{
+  "name": "prismatic-showdown",
+  "private": true,
+  "scripts": {
+    "setup": "npm install && npm --prefix server install && npm --prefix client install",
+    "dev": "concurrently -n server,client -c magenta,cyan \"npm --prefix server run dev\" \"npm --prefix client start\"",
+    "build": "npm --prefix client run build",
+    "start": "npm --prefix server start",
+    "typecheck": "npm --prefix server run typecheck"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.6"
+  }
+}

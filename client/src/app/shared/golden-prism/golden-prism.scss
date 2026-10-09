@@ -1,0 +1,128 @@
+:host {
+  --gp-size: 96px;
+  --gp-depth: calc(var(--gp-size) * 0.1);
+
+  display: inline-block;
+  width: var(--gp-size);
+  // The logo is 33 × 30; leave room below for the glow.
+  height: calc(var(--gp-size) * 30 / 33 * 1.25);
+  vertical-align: middle;
+}
+
+.golden-prism {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  perspective: calc(var(--gp-size) * 6);
+
+  &__spinner {
+    position: absolute;
+    inset: 0 0 auto;
+    aspect-ratio: 33 / 30;
+    transform-style: preserve-3d;
+    animation: golden-prism-spin 5s linear infinite;
+  }
+
+  // Every layer is the logo shape, cut out with a mask and filled with gold.
+  &__layer {
+    position: absolute;
+    inset: 0;
+    // Bundled from shared/ by the build.
+    mask: url('../../../../../shared/prismatic-logo.svg') center / contain no-repeat;
+    backface-visibility: visible;
+
+    &--edge {
+      background: linear-gradient(180deg, #c99a2e, #7a5410 60%, #5c3d08);
+      transform: translateZ(calc(var(--gp-depth) * var(--gp-z)));
+    }
+
+    &--back {
+      background: linear-gradient(135deg, #a8781c, #f0c552 45%, #8a6210);
+      transform: translateZ(calc(var(--gp-depth) * -0.5 - 0.5px)) rotateY(180deg);
+    }
+
+    &--face {
+      overflow: hidden;
+      // Polished gold: bright highlights bouncing between deep amber bands.
+      background:
+        radial-gradient(circle at 28% 22%, rgb(255 255 240 / 0.95), transparent 30%),
+        linear-gradient(135deg, #fff3b0 0%, #f7cf4a 18%, #b8860b 38%, #ffe27a 55%, #c8922a 72%, #fff0a0 88%, #9c6c12 100%);
+      transform: translateZ(calc(var(--gp-depth) * 0.5 + 0.5px));
+    }
+  }
+
+  // A bright diagonal reflection sweeping across the face.
+  &__glint {
+    position: absolute;
+    inset: -50%;
+    background: linear-gradient(
+      115deg,
+      transparent 40%,
+      rgb(255 255 255 / 0.85) 48%,
+      rgb(255 250 220 / 0.4) 52%,
+      transparent 60%
+    );
+    animation: golden-prism-glint 2.5s ease-in-out infinite;
+  }
+
+  &__glow {
+    position: absolute;
+    left: 15%;
+    right: 15%;
+    bottom: 0;
+    height: 14%;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgb(255 201 74 / 0.55), transparent 70%);
+    animation: golden-prism-glow 5s ease-in-out infinite;
+  }
+}
+
+@keyframes golden-prism-spin {
+  from {
+    transform: rotateX(-8deg) rotateY(0deg);
+  }
+
+  to {
+    transform: rotateX(-8deg) rotateY(360deg);
+  }
+}
+
+@keyframes golden-prism-glint {
+  0% {
+    transform: translateX(-60%);
+  }
+
+  60%,
+  100% {
+    transform: translateX(60%);
+  }
+}
+
+// The glow narrows as the trophy turns edge-on, which sells the rotation.
+@keyframes golden-prism-glow {
+  0%,
+  50%,
+  100% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+
+  25%,
+  75% {
+    transform: scaleX(0.55);
+    opacity: 0.6;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .golden-prism__spinner {
+    animation: none;
+    transform: rotateX(-8deg) rotateY(-25deg);
+  }
+
+  .golden-prism__glint,
+  .golden-prism__glow {
+    animation: none;
+  }
+}

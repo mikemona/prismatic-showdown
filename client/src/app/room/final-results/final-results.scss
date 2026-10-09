@@ -1,0 +1,97 @@
+.final {
+  display: grid;
+  place-items: start center;
+  padding: 48px 16px;
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    width: min(560px, 100%);
+    text-align: center;
+  }
+
+  &__logo {
+    width: 56px;
+  }
+
+  &__trophy {
+    margin-bottom: 4px;
+  }
+
+  &__eyebrow {
+    margin: 0;
+    color: var(--pp-text-muted);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  &__winner {
+    color: var(--pp-value);
+    font-size: clamp(32px, 6vw, 48px);
+  }
+
+  &__list {
+    display: grid;
+    gap: 6px;
+    width: 100%;
+    margin: 8px 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: var(--pp-radius-sm);
+    background: var(--pp-surface-raised);
+    text-align: left;
+
+    &--top {
+      font-size: 18px;
+    }
+
+    &--champion {
+      box-shadow: inset 0 0 0 2px var(--pp-value);
+    }
+  }
+
+  &__rank {
+    width: 28px;
+    color: var(--pp-text-faint);
+    font: 700 16px var(--pp-font-display);
+
+    .final__row--top & {
+      color: var(--pp-value);
+    }
+  }
+
+  &__name {
+    flex: 1;
+    font-weight: 600;
+  }
+
+  &__score {
+    font: 700 20px var(--pp-font-display);
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__note {
+    width: 100%;
+    margin: 0;
+    color: var(--pp-text-muted);
+    font-size: 14px;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+}

@@ -1,0 +1,76 @@
+<main class="lobby">
+  <section class="pp-card lobby__invite">
+    <p class="lobby__eyebrow">Room code</p>
+    <p class="lobby__code">{{ state().code }}</p>
+    <p class="lobby__link">{{ link() }}</p>
+    <button
+      class="pp-btn pp-btn--primary lobby__copy"
+      type="button"
+      [class.pp-btn--success]="invite.copied()"
+      (click)="invite.copy(state().code)"
+    >
+      {{ invite.copied() ? '✓ Link copied!' : 'Copy invite link' }}
+    </button>
+    <span class="pp-sr-only" role="status">{{ invite.copied() ? 'Invite link copied' : '' }}</span>
+  </section>
+
+  <section class="pp-card lobby__players" aria-labelledby="lobby-players-title">
+    <div class="lobby__players-head">
+      <h2 class="pp-card__title" id="lobby-players-title">Players</h2>
+      <span class="lobby__count">{{ state().players.length }}</span>
+    </div>
+
+    @if (state().players.length) {
+      <ul class="lobby__list">
+        @for (player of state().players; track player.id) {
+          <li class="lobby__player" [class.lobby__player--away]="!player.connected">
+            <span class="lobby__avatar" aria-hidden="true" [style.--player-color]="'var(--pp-' + player.color + ')'">{{ player.name.charAt(0) }}</span>
+            <span class="lobby__name">{{ player.name }}</span>
+            @if (player.isBot) {
+              <span class="lobby__bot">test</span>
+            }
+            @if (!player.connected) {
+              <span class="lobby__away">away</span>
+            }
+            @if (isHost()) {
+              <button class="pp-btn pp-btn--ghost pp-btn--sm" type="button" (click)="game.kick(player.id)">
+                Remove<span class="pp-sr-only"> {{ player.name }}</span>
+              </button>
+            }
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="lobby__empty">No one here yet. Share the link to get people in.</p>
+    }
+
+    @if (isHost()) {
+      <fieldset class="lobby__settings">
+        <legend class="lobby__settings-title">House rules</legend>
+        <label class="lobby__toggle">
+          <input type="checkbox" [checked]="state().settings.negativeScoring" (change)="toggle('negativeScoring', $event)" />
+          Wrong answers lose points
+        </label>
+        <label class="lobby__toggle">
+          <input type="checkbox" [checked]="state().settings.playersPickClues" (change)="toggle('playersPickClues', $event)" />
+          Player in control picks the next clue
+        </label>
+      </fieldset>
+
+      <div class="lobby__test">
+        <button class="pp-btn pp-btn--ghost pp-btn--sm" type="button" (click)="game.addBots(3)">+ Add 3 test players</button>
+        <button class="pp-btn pp-btn--ghost pp-btn--sm" type="button" (click)="openPlayerTab()">Open a player tab ↗</button>
+        @if (hasBots()) {
+          <button class="pp-btn pp-btn--ghost pp-btn--sm" type="button" (click)="game.removeBots()">Remove test players</button>
+        }
+        <span class="lobby__test-hint">Test players play on their own. A player tab lets you join as yourself.</span>
+      </div>
+
+      <button class="pp-btn pp-btn--success pp-btn--block" type="button" [disabled]="!state().players.length" (click)="game.start()">
+        Start game
+      </button>
+    } @else {
+      <p class="lobby__waiting" role="status">Waiting for {{ state().hostName }} to start the game…</p>
+    }
+  </section>
+</main>

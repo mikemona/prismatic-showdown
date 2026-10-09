@@ -1,0 +1,83 @@
+<main class="home">
+  <header class="home__hero">
+    <div class="pp-prism-logo home__logo" aria-hidden="true"></div>
+    <h1 class="home__title">Prismatic <span>Showdown</span></h1>
+    <p class="home__tagline">
+      Who knows the Prismatic design system best? Tokens, components, layouts, and governance rules are all on the board. Grab your buzzer and play for the Golden Prism!
+    </p>
+    <button class="pp-btn pp-btn--ghost home__rules" type="button" (click)="rules.open()">
+      How to play
+    </button>
+  </header>
+
+  <div class="home__options">
+    <form class="pp-card home__card" (ngSubmit)="createRoom()">
+      <h2 class="pp-card__title">Host a game</h2>
+      <p class="pp-card__subtitle">
+        You'll run the board and judge answers. Players join from a link.
+      </p>
+      <label class="pp-field">
+        <span class="pp-field__label">Your name</span>
+        <input
+          class="pp-field__input"
+          name="hostName"
+          autocomplete="nickname"
+          maxlength="24"
+          placeholder="e.g. Mike"
+          required
+          [ngModel]="hostName()"
+          (ngModelChange)="hostName.set($event)"
+        />
+      </label>
+      @if (createError(); as error) {
+        <p class="pp-field__error" role="alert">{{ error }}</p>
+      }
+      <button
+        class="pp-btn pp-btn--primary pp-btn--block home__submit"
+        type="submit"
+        [disabled]="!hostName().trim() || creating()"
+      >
+        {{ creating() ? 'Creating room…' : 'Create room' }}
+      </button>
+    </form>
+
+    <form class="pp-card home__card" (ngSubmit)="joinRoom()">
+      <h2 class="pp-card__title">Join a game</h2>
+      <p class="pp-card__subtitle">Got a room code from your host? Enter it here.</p>
+      <label class="pp-field">
+        <span class="pp-field__label">Room code</span>
+        <input
+          class="pp-field__input pp-field__input--code"
+          name="joinCode"
+          autocomplete="off"
+          maxlength="4"
+          placeholder="ABCD"
+          required
+          [ngModel]="joinCode()"
+          (ngModelChange)="joinCode.set($event)"
+        />
+      </label>
+      @if (joinError(); as error) {
+        <p class="pp-field__error" role="alert">{{ error }}</p>
+      }
+      <button
+        class="pp-btn pp-btn--block home__submit"
+        type="submit"
+        [disabled]="!joinCode().trim()"
+      >
+        Continue
+      </button>
+    </form>
+  </div>
+
+  @if (devTools) {
+    <footer class="home__dev">
+      <span class="home__dev-label">Dev tools</span>
+      <button class="pp-btn pp-btn--ghost pp-btn--sm" type="button" [disabled]="creating()" (click)="testEnding()">
+        Test the ending: 3 clues left ↗
+      </button>
+    </footer>
+  }
+</main>
+
+<app-rules-dialog #rules />

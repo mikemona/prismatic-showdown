@@ -1,0 +1,110 @@
+<section class="pp-card host-controls" aria-labelledby="host-controls-title">
+  <h2 class="host-controls__title" id="host-controls-title">Host controls</h2>
+
+  @if (round(); as r) {
+    @switch (r.phase) {
+      @case ('reading') {
+        @if (clue()?.dailyDouble; as dd) {
+          @if (dd.wager === null) {
+            <p class="host-controls__hint">
+              <strong class="host-controls__name">Daily Double!</strong> Waiting for {{ nameOf(dd.playerId) }} to wager
+              ({{ dd.minWager }}–{{ dd.maxWager }}).
+            </p>
+          } @else {
+            <p class="host-controls__hint">
+              <strong class="host-controls__name">{{ nameOf(dd.playerId) }}</strong> wagered {{ dd.wager }}. Reveal the clue
+              when you're ready.
+            </p>
+          }
+          <button
+            class="pp-btn pp-btn--primary pp-btn--block"
+            type="button"
+            [disabled]="dd.wager === null"
+            (click)="game.revealDailyDouble()"
+          >
+            Reveal the clue
+          </button>
+        } @else {
+          <p class="host-controls__hint">Read the question aloud. Buzzers open automatically in a few seconds.</p>
+          @if (clue()) {
+            <button class="pp-btn pp-btn--block" type="button" (click)="game.openBuzzers()">Open buzzers now</button>
+          }
+        }
+      }
+      @case ('buzzing') {
+        @if (r.priorityPlayerId) {
+          <p class="host-controls__hint">
+            <strong class="host-controls__name">{{ nameOf(r.priorityPlayerId) }}</strong> picked this clue and has a head start
+            before it opens to everyone.
+          </p>
+        } @else if (r.lockedOutPlayerIds.length) {
+          <p class="host-controls__hint">Open for a steal. Waiting for someone to buzz in…</p>
+        } @else {
+          <p class="host-controls__hint">Waiting for someone to buzz in…</p>
+        }
+      }
+      @case ('answering') {
+        <p class="host-controls__hint">
+          <strong class="host-controls__name">{{ nameOf(r.buzzedPlayerId) }}</strong> is answering. Were they right?
+        </p>
+        <div class="host-controls__judge">
+          @if (clue()?.dailyDouble; as dd) {
+            <button class="pp-btn pp-btn--success" type="button" (click)="game.judge(true)">Correct +{{ dd.wager }}</button>
+            <button class="pp-btn pp-btn--danger" type="button" (click)="game.judge(false)">Wrong −{{ dd.wager }}</button>
+          } @else if (clue(); as c) {
+            <button class="pp-btn pp-btn--success" type="button" (click)="game.judge(true)">Correct +{{ c.value }}</button>
+            <button class="pp-btn pp-btn--danger" type="button" (click)="game.judge(false)">
+              Wrong{{ state().settings.negativeScoring ? ' −' + c.value : '' }}
+            </button>
+          } @else {
+            <button class="pp-btn pp-btn--success" type="button" (click)="game.judge(true)">Correct, they win</button>
+            <button class="pp-btn pp-btn--danger" type="button" (click)="game.judge(false)">Wrong</button>
+          }
+        </div>
+      }
+      @case ('revealed') {
+        @if (clue()) {
+          <p class="host-controls__hint">The answer is showing on everyone's screen.</p>
+          <button class="pp-btn pp-btn--primary pp-btn--block" type="button" (click)="game.closeClue()">Back to board</button>
+        } @else if (tiebreaker()?.winnerId) {
+          <p class="host-controls__hint">
+            <strong class="host-controls__name">{{ nameOf(tiebreaker()?.winnerId) }}</strong> broke the tie!
+          </p>
+          <button class="pp-btn pp-btn--success pp-btn--block" type="button" (click)="game.tiebreakerNext()">Award the Golden Prism</button>
+        } @else {
+          <p class="host-controls__hint">Nobody got it, so it's still tied.</p>
+          <button class="pp-btn pp-btn--primary pp-btn--block" type="button" (click)="game.tiebreakerNext()">
+            Next tiebreaker question
+          </button>
+        }
+      }
+    }
+
+    @if (r.phase !== 'revealed') {
+      <div class="host-controls__secondary">
+        @if (clue(); as c) {
+          <button class="pp-btn pp-btn--sm" type="button" (click)="game.startTimer()">
+            {{ c.timerEndsAt ? 'Restart' : 'Start' }} timer ({{ c.timeLimitSec ?? 30 }}s)
+          </button>
+          <button class="pp-btn pp-btn--sm" type="button" (click)="game.reveal()">Reveal answer</button>
+        } @else {
+          <button class="pp-btn pp-btn--sm" type="button" (click)="game.reveal()">Nobody got it, reveal</button>
+        }
+      </div>
+    }
+  } @else {
+    <p class="host-controls__hint">Pick a clue on the board, or let the player in control pick.</p>
+
+    <label class="pp-field">
+      <span class="pp-field__label">In control</span>
+      <select class="pp-field__input host-controls__select" (change)="changeControl($event)">
+        <option value="" [selected]="!state().controlPlayerId">Nobody (host picks)</option>
+        @for (player of state().players; track player.id) {
+          <option [value]="player.id" [selected]="player.id === state().controlPlayerId">{{ player.name }}</option>
+        }
+      </select>
+    </label>
+
+    <button class="pp-btn pp-btn--ghost pp-btn--sm" type="button" (click)="endGame()">End game early</button>
+  }
+</section>

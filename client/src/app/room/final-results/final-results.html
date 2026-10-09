@@ -1,0 +1,35 @@
+<main class="final">
+  <section class="pp-card final__card">
+    @if (champion()) {
+      <app-golden-prism class="final__trophy" [size]="120" />
+    } @else {
+      <div class="pp-prism-logo final__logo" aria-hidden="true"></div>
+    }
+    <p class="final__eyebrow">Final scores</p>
+    @if (champion(); as c) {
+      <h1 class="final__winner">{{ c.name }} wins the Golden Prism!</h1>
+    } @else if (ranked().length) {
+      <h1 class="final__winner">It's a tie!</h1>
+    }
+
+    <ol class="final__list">
+      @for (player of ranked(); track player.id; let i = $index) {
+        <li class="final__row" [class.final__row--top]="i < 3" [class.final__row--champion]="player.id === state().championId">
+          <span class="final__rank">{{ i + 1 }}</span>
+          <span class="final__name">{{ player.name }}</span>
+          <span class="final__score">{{ player.score }}</span>
+        </li>
+      }
+    </ol>
+
+    <div class="final__actions">
+      @if (isHost()) {
+        <button class="pp-btn pp-btn--primary" type="button" (click)="game.reset()">Play again with this group</button>
+        @if (champion(); as c) {
+          <p class="final__note">{{ c.name }} holds the Golden Prism and picks first next game.</p>
+        }
+      }
+      <a class="pp-btn" routerLink="/">Leave room</a>
+    </div>
+  </section>
+</main>

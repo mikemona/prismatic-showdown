@@ -1,0 +1,117 @@
+.intro {
+  display: grid;
+  place-items: start center;
+  padding: 48px 16px;
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: min(640px, 100%);
+    text-align: center;
+  }
+
+  &__bar {
+    width: 80px;
+  }
+
+  &__title {
+    font-size: clamp(28px, 5vw, 40px);
+  }
+
+  &__players {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__player {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 2px solid transparent;
+    border-radius: var(--pp-radius-sm);
+    background: var(--pp-surface-raised);
+    text-align: left;
+    // No easing on the way in so fast hops stay crisp; fade out a little on the way off.
+    transition: background 120ms, border-color 120ms, transform 120ms;
+
+    &--lit {
+      border-color: var(--player-color);
+      background: color-mix(in srgb, var(--player-color) 22%, var(--pp-surface-raised));
+      transform: scale(1.05);
+      transition: none;
+    }
+
+    &--chosen {
+      animation: intro-land 900ms ease-out;
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--player-color) 35%, transparent), var(--pp-shadow);
+    }
+  }
+
+  &__avatar {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--player-color);
+    color: var(--pp-bg);
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  &__name {
+    min-width: 0;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+
+  &__result {
+    min-height: 32px;
+  }
+
+  &__announce {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 0;
+    color: var(--pp-value);
+    font: 700 24px var(--pp-font-display);
+  }
+
+  &__hint {
+    margin: 0;
+    color: var(--pp-text-muted);
+  }
+}
+
+@keyframes intro-land {
+  0% {
+    transform: scale(1.05);
+  }
+
+  40% {
+    transform: scale(1.18);
+  }
+
+  100% {
+    transform: scale(1.05);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro__player {
+    animation: none !important;
+    transform: none !important;
+  }
+}

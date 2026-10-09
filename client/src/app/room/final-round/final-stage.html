@@ -1,0 +1,57 @@
+<article class="final-stage">
+  <header class="final-stage__head">
+    <div>
+      <p class="final-stage__eyebrow">Final Showdown</p>
+      <h2 class="final-stage__category">{{ final().category }}</h2>
+    </div>
+    @if (final().answerEndsAt; as endsAt) {
+      <app-countdown [endsAt]="endsAt" [durationMs]="30000" />
+    }
+  </header>
+
+  <div class="final-stage__body">
+    @switch (final().phase) {
+      @case ('wager') {
+        <p class="final-stage__lead">Place your wagers!</p>
+        <p class="final-stage__sub">You can bet up to everything you've earned. The question appears once the wagers are in.</p>
+        <p class="final-stage__progress" role="status">{{ wageredCount() }} of {{ final().entries.length }} locked in</p>
+      }
+      @case ('answer') {
+        <p class="final-stage__prompt">{{ final().prompt }}</p>
+        <p class="final-stage__progress" role="status">{{ answeredCount() }} of {{ final().entries.length }} have an answer in</p>
+      }
+      @default {
+        <p class="final-stage__prompt final-stage__prompt--small">{{ final().prompt }}</p>
+        @if (final().phase === 'done' && final().answer) {
+          <p class="final-stage__answer">Correct answer: <strong>{{ final().answer }}</strong></p>
+        }
+        <ol class="final-stage__reveals">
+          @for (row of rows(); track row.entry.playerId) {
+            <li
+              class="final-stage__reveal"
+              [class.final-stage__reveal--current]="row.entry.playerId === final().currentPlayerId"
+              [class.final-stage__reveal--correct]="row.entry.correct === true"
+              [class.final-stage__reveal--wrong]="row.entry.correct === false"
+              [style.--player-color]="'var(--pp-' + (row.player?.color ?? 'blue') + ')'"
+            >
+              <span class="final-stage__avatar" aria-hidden="true">{{ row.player?.name?.charAt(0) }}</span>
+              <span class="final-stage__who">{{ row.player?.name ?? 'Left the game' }}</span>
+              <span class="final-stage__outcome">
+                <span class="final-stage__their-answer">
+                  @if (row.entry.revealed) {
+                    {{ row.entry.answer || '(no answer)' }}
+                  } @else {
+                    <span aria-label="Not revealed yet">• • •</span>
+                  }
+                </span>
+                @if (row.entry.correct !== null) {
+                  <span class="final-stage__delta">{{ row.entry.correct ? '+' : '−' }}{{ row.entry.wager }}</span>
+                }
+              </span>
+            </li>
+          }
+        </ol>
+      }
+    }
+  </div>
+</article>

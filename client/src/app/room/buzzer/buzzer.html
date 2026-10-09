@@ -1,0 +1,18 @@
+<section class="pp-card buzzer" [class]="'buzzer--' + status()" aria-label="Buzzer">
+  <button class="buzzer__button" type="button" [disabled]="status() !== 'open'" (click)="buzz()">
+    <span class="buzzer__label">
+      @if (status() === 'mine') {
+        <span class="buzzer__label-text buzzer__label-text--in">You're in!</span>
+      } @else if (countdownTo(); as endsAt) {
+        <app-countdown class="buzzer__label-text" [endsAt]="endsAt" size="inline" />
+      } @else {
+        <span class="buzzer__label-text">BUZZ</span>
+      }
+      @if (status() === 'open' && round().buzzEndsAt; as endsAt) {
+        <span class="buzzer__timer"><app-countdown [endsAt]="endsAt" size="inline" />s</span>
+      }
+    </span>
+  </button>
+  <!-- When you're in, the button says it; keep the message for screen readers only. -->
+  <p class="buzzer__message" [class.pp-sr-only]="status() === 'mine'" role="status">{{ message() }}</p>
+</section>

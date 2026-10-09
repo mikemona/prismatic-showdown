@@ -1,0 +1,39 @@
+<section class="pp-card scoreboard" aria-labelledby="scoreboard-title">
+  <h2 class="scoreboard__title" id="scoreboard-title">Scores</h2>
+
+  <ol class="scoreboard__list">
+    @for (player of ranked(); track player.id) {
+      <li
+        class="scoreboard__row"
+        [class.scoreboard__row--you]="player.id === state().you.playerId"
+        [class.scoreboard__row--buzzed]="player.id === state().activeClue?.buzzedPlayerId"
+        [class.scoreboard__row--away]="!player.connected"
+      >
+        <span class="scoreboard__name">
+          {{ player.name }}
+          @if (player.id === state().controlPlayerId) {
+            <span class="scoreboard__badge" title="Has control">pick</span>
+          }
+          @if (player.isBot) {
+            <span class="scoreboard__away">test</span>
+          }
+          @if (!player.connected) {
+            <span class="scoreboard__away">away</span>
+          }
+        </span>
+        <span class="scoreboard__score" [class.scoreboard__score--negative]="player.score < 0">{{ player.score }}</span>
+
+        @if (isHost()) {
+          <span class="scoreboard__adjust">
+            <button class="pp-btn pp-btn--ghost pp-btn--sm" type="button" (click)="game.adjustScore(player.id, -step())">
+              −<span class="pp-sr-only">{{ step() }} from {{ player.name }}</span>
+            </button>
+            <button class="pp-btn pp-btn--ghost pp-btn--sm" type="button" (click)="game.adjustScore(player.id, step())">
+              +<span class="pp-sr-only">{{ step() }} to {{ player.name }}</span>
+            </button>
+          </span>
+        }
+      </li>
+    }
+  </ol>
+</section>

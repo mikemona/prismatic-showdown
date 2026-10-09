@@ -1,0 +1,63 @@
+<article class="clue-stage" [class]="'clue-stage--' + round().phase">
+  <header class="clue-stage__head">
+    @if (clue(); as c) {
+      <div class="clue-stage__meta">
+        <span class="clue-stage__category">{{ c.categoryTitle }}</span>
+        @if (c.dailyDouble; as dd) {
+          <span class="clue-stage__dd-tag">Daily Double</span>
+          @if (dd.wager !== null) {
+            <span class="clue-stage__value">{{ dd.wager }}</span>
+          }
+        } @else {
+          <span class="clue-stage__value">{{ c.value }}</span>
+        }
+        <span class="clue-stage__difficulty" [attr.aria-label]="'Difficulty ' + c.difficulty + ' of 5'">
+          @for (pip of pips; track pip) {
+            <span class="clue-stage__pip" [class.clue-stage__pip--on]="pip <= c.difficulty"></span>
+          }
+        </span>
+      </div>
+      @if (c.timerEndsAt; as endsAt) {
+        <app-countdown [endsAt]="endsAt" [durationMs]="(c.timeLimitSec ?? 30) * 1000" />
+      }
+    } @else if (tiebreaker(); as tb) {
+      <div class="clue-stage__meta">
+        <span class="clue-stage__category">Tiebreaker #{{ tb.number }}</span>
+        <span class="clue-stage__tied">{{ tiedNames() }}</span>
+      </div>
+    }
+  </header>
+
+  <div class="clue-stage__body">
+    @if (ddHidden() && !isHost()) {
+      <div class="clue-stage__dd">
+        <p class="clue-stage__dd-title">Daily Double!</p>
+        <p class="clue-stage__dd-sub">{{ ddName() }} found it! A harder question, for whatever they choose to wager.</p>
+      </div>
+    } @else if (clue(); as c) {
+      @if (ddHidden()) {
+        <p class="clue-stage__dd-host">Daily Double! Players can't see this clue until you reveal it.</p>
+      }
+      <app-clue-renderer [clue]="c" />
+    } @else if (tiebreaker(); as tb) {
+      <app-text-clue [clue]="tb" />
+    }
+  </div>
+
+  <footer class="clue-stage__foot">
+    <p class="clue-stage__status" role="status">
+      {{ statusText() }}
+      @if (statusCountdown(); as endsAt) {
+        <app-countdown [endsAt]="endsAt" size="inline" />
+      }
+    </p>
+    @if (answer(); as text) {
+      <p class="clue-stage__answer" [class.clue-stage__answer--private]="round().phase !== 'revealed'">
+        @if (round().phase !== 'revealed') {
+          <span class="clue-stage__answer-label">Answer (only you can see this)</span>
+        }
+        {{ text }}
+      </p>
+    }
+  </footer>
+</article>

@@ -1,0 +1,89 @@
+<dialog #dialog class="rules" aria-labelledby="rules-title" (click)="onDialogClick($event)">
+  <div class="rules__panel">
+    <header class="rules__head">
+      <h2 class="rules__title" id="rules-title">How to play</h2>
+      <button class="pp-btn pp-btn--ghost pp-btn--sm rules__close" type="button" (click)="close()">
+        <span aria-hidden="true">✕</span>
+        <span class="pp-sr-only">Close rules</span>
+      </button>
+    </header>
+
+    <div class="rules__body">
+      <section class="rules__section">
+        <h3 class="rules__heading">Getting started</h3>
+        <ul class="rules__list">
+          <li>The host creates a room and shares the link or the 4-letter code.</li>
+          <li>Players open the link on their own screen and enter a name.</li>
+          <li>The host spins to choose who picks first. On a replay, last game's Golden Prism winner picks first.</li>
+        </ul>
+      </section>
+
+      <section class="rules__section">
+        <h3 class="rules__heading">The board</h3>
+        <ul class="rules__list">
+          <li>5 categories, each with clues worth 100 to 500. Bigger values are harder.</li>
+          <li>The player in control picks the next clue. Answer correctly to take control.</li>
+        </ul>
+      </section>
+
+      <section class="rules__section">
+        <h3 class="rules__heading">Buzzing in</h3>
+        <ul class="rules__list">
+          <li>The host reads the clue. Buzzers open a few seconds later, longer for longer questions.</li>
+          <li>
+            Whoever picked the clue gets a <strong>6-second head start</strong>. If they don't buzz in time, they're out
+            on that clue and it opens to everyone else.
+          </li>
+          <li>First to buzz answers out loud, and the host decides if it's right. Tap the buzzer or press Space.</li>
+        </ul>
+      </section>
+
+      <section class="rules__section">
+        <h3 class="rules__heading">Scoring</h3>
+        <ul class="rules__list">
+          <li><strong>Right:</strong> you earn the clue's value and pick next.</li>
+          <li>
+            <strong>Wrong:</strong> you lose the clue's value (unless the host turns that off), you're out for that clue,
+            and the others can steal. The answer stays hidden until someone gets it or everyone's out.
+          </li>
+        </ul>
+      </section>
+
+      <section class="rules__section rules__section--feature">
+        <h3 class="rules__heading">Daily Double</h3>
+        <ul class="rules__list">
+          <li>One clue worth 300 or more hides a Daily Double, with a harder question than usual.</li>
+          <li>
+            Only the player who found it answers. They wager at least 5, and up to their score or 1,000, whichever is
+            higher.
+          </li>
+          <li>The host reveals the clue after the wager. Right or wrong, you win or lose what you wagered. No steals.</li>
+        </ul>
+      </section>
+
+      <section class="rules__section rules__section--feature">
+        <h3 class="rules__heading">Final Showdown</h3>
+        <ul class="rules__list">
+          <li>When the board is empty, everyone sees the final category and wagers 0 up to their score.</li>
+          <li>Then the question appears, and you have <strong>30 seconds</strong> to type your answer.</li>
+          <li>The host reveals each answer, lowest score first. Right adds your wager, wrong takes it away.</li>
+        </ul>
+      </section>
+
+      <section class="rules__section">
+        <h3 class="rules__heading">Tiebreaker</h3>
+        <ul class="rules__list">
+          <li>If first place is tied, only the tied players buzz on a harder question, with 15 seconds to buzz.</li>
+          <li>The first correct answer wins. If nobody gets it, another question comes up.</li>
+          <li>The winner takes home the <strong>Golden Prism</strong>.</li>
+        </ul>
+      </section>
+
+      <p class="rules__tip">Lost your connection or refreshed the page? Just reopen the link and you're back in your seat.</p>
+    </div>
+
+    <footer class="rules__foot">
+      <button class="pp-btn pp-btn--primary" type="button" (click)="close()">Got it</button>
+    </footer>
+  </div>
+</dialog>

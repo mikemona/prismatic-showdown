@@ -1,0 +1,14 @@
+<span class="golden-prism">
+  <span class="golden-prism__spinner">
+    @for (z of layers(); track $index) {
+      <span class="golden-prism__layer golden-prism__layer--edge" [style.--gp-z]="z"></span>
+    }
+    <span class="golden-prism__layer golden-prism__layer--back"></span>
+    <span class="golden-prism__layer golden-prism__layer--face">
+      <span class="golden-prism__glint"></span>
+    </span>
+  </span>
+  @if (glow()) {
+    <span class="golden-prism__glow"></span>
+  }
+</span>

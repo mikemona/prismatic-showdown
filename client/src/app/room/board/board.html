@@ -1,0 +1,28 @@
+<p class="board-banner" [class.board-banner--you]="canPick() && state().you.role === 'player'" role="status">{{ banner() }}</p>
+
+<div class="board" [style.--board-columns]="state().categories.length">
+  @for (category of state().categories; track category.id) {
+    <div class="board__column" role="group" [attr.aria-label]="category.title">
+      <div class="board__category" [title]="category.description">
+        <span class="board__category-title">{{ category.title }}</span>
+      </div>
+
+      @for (clue of category.clues; track clue.id) {
+        <button
+          class="board__cell"
+          type="button"
+          [class.board__cell--used]="clue.used"
+          [disabled]="clue.used || !canPick()"
+          (click)="game.selectClue(clue.id)"
+        >
+          @if (clue.used) {
+            <span class="pp-sr-only">{{ category.title }} {{ clue.value }}, already played</span>
+          } @else {
+            <span class="board__value">{{ clue.value }}</span>
+            <span class="pp-sr-only"> points in {{ category.title }}</span>
+          }
+        </button>
+      }
+    </div>
+  }
+</div>

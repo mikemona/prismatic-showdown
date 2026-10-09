@@ -1,0 +1,123 @@
+@if (game.closedReason(); as reason) {
+  <main class="room-gate">
+    <section class="pp-card room-gate__card">
+      <h1 class="pp-card__title">You've left the room</h1>
+      <p class="pp-card__subtitle">{{ reason }}</p>
+      <a class="pp-btn pp-btn--primary" routerLink="/">Back to start</a>
+    </section>
+  </main>
+} @else {
+  @switch (status()) {
+    @case ('loading') {
+      <main class="room-gate">
+        <p class="room-gate__loading" role="status">Connecting to room {{ roomCode() }}…</p>
+      </main>
+    }
+
+    @case ('missing') {
+      <main class="room-gate">
+        <section class="pp-card room-gate__card">
+          <h1 class="pp-card__title">Room {{ roomCode() }} not found</h1>
+          <p class="pp-card__subtitle">Check the code with your host. Rooms close after everyone has been gone for 30 minutes.</p>
+          <a class="pp-btn pp-btn--primary" routerLink="/">Back to start</a>
+        </section>
+      </main>
+    }
+
+    @case ('name') {
+      <main class="room-gate">
+        <form class="pp-card room-gate__card" (ngSubmit)="join()">
+          <div class="pp-prism-bar room-gate__bar"></div>
+          <h1 class="pp-card__title">Join {{ hostName() }}'s game</h1>
+          <p class="pp-card__subtitle">Room {{ roomCode() }}. Pick the name everyone will see on the scoreboard.</p>
+          <label class="pp-field">
+            <span class="pp-field__label">Your name</span>
+            <input
+              class="pp-field__input"
+              name="playerName"
+              autocomplete="nickname"
+              maxlength="24"
+              required
+              [ngModel]="playerName()"
+              (ngModelChange)="playerName.set($event)"
+            />
+          </label>
+          @if (joinError(); as error) {
+            <p class="pp-field__error" role="alert">{{ error }}</p>
+          }
+          <button class="pp-btn pp-btn--primary pp-btn--block" type="submit" [disabled]="!playerName().trim() || joining()">
+            {{ joining() ? 'Joining…' : 'Join game' }}
+          </button>
+        </form>
+      </main>
+    }
+
+    @case ('in-room') {
+      @if (state(); as s) {
+        <div class="room">
+          <app-room-header class="room__header" [state]="s" [connected]="game.connected()" />
+
+          @switch (s.phase) {
+            @case ('lobby') {
+              <app-lobby class="room__lobby" [state]="s" />
+            }
+            @case ('intro') {
+              <app-intro-picker class="room__lobby" [state]="s" />
+            }
+            @case ('ended') {
+              <app-final-results class="room__lobby" [state]="s" />
+            }
+            @default {
+              <div class="room__play">
+                <section class="room__stage" aria-label="Game board">
+                  @if (s.final; as final) {
+                    <app-final-stage [final]="final" [players]="s.players" />
+                  } @else if (s.tiebreaker; as tb) {
+                    <app-clue-stage [tiebreaker]="tb" [players]="s.players" />
+                  } @else if (s.activeClue; as clue) {
+                    <app-clue-stage [clue]="clue" [players]="s.players" [isHost]="s.you.role === 'host'" />
+                  } @else {
+                    <app-board [state]="s" />
+                  }
+                </section>
+
+                <aside class="room__side">
+                  @if (s.final) {
+                    <app-final-panel [state]="s" />
+                  } @else if (s.you.role === 'host') {
+                    <app-host-controls [state]="s" />
+                  } @else if (s.tiebreaker; as tb) {
+                    @if (tb.eligiblePlayerIds?.includes(s.you.playerId ?? '')) {
+                      <app-buzzer [round]="tb" [state]="s" />
+                    } @else {
+                      <p class="pp-card room__note">Tiebreaker! Only the tied players can buzz. Play along at home.</p>
+                    }
+                  } @else if (s.activeClue?.dailyDouble; as dd) {
+                    @if (dd.playerId !== s.you.playerId) {
+                      <p class="pp-card room__note">Daily Double! Only {{ nameOf(dd.playerId) }} can answer this one.</p>
+                    } @else if (dd.wager === null) {
+                      <app-daily-double-wager [clue]="s.activeClue!" />
+                    } @else if (!dd.revealed) {
+                      <p class="pp-card room__note room__note--you">
+                        You wagered {{ dd.wager }}! Get ready to answer out loud when the clue appears.
+                      </p>
+                    } @else {
+                      <app-buzzer [round]="s.activeClue!" [state]="s" />
+                    }
+                  } @else if (s.activeClue; as clue) {
+                    <app-buzzer [round]="clue" [state]="s" />
+                  }
+                  <app-scoreboard [state]="s" />
+                </aside>
+              </div>
+            }
+          }
+        </div>
+      } @else {
+        <main class="room-gate">
+          <p class="room-gate__loading" role="status">Loading game…</p>
+        </main>
+      }
+    }
+  }
+}

@@ -1,0 +1,42 @@
+.host-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px;
+  border-color: var(--pp-value);
+
+  &__title {
+    color: var(--pp-value);
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  &__hint {
+    margin: 0;
+    color: var(--pp-text-muted);
+  }
+
+  &__name {
+    color: var(--pp-text);
+  }
+
+  &__judge {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  &__secondary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--pp-border);
+  }
+
+  &__select {
+    min-height: 44px;
+    font-size: 15px;
+  }
+}

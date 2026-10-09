@@ -1,0 +1,114 @@
+.buzzer {
+  --buzzer-color: var(--pp-surface-raised);
+  --buzzer-text: var(--pp-text-faint);
+
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding: 24px;
+
+  &--open {
+    --buzzer-color: var(--pp-red);
+    --buzzer-text: #fff;
+  }
+
+  &--mine {
+    --buzzer-color: var(--pp-value);
+    --buzzer-text: var(--pp-bg);
+  }
+
+  &--their-head-start {
+    --buzzer-text: var(--pp-text-muted);
+  }
+
+  &--theirs,
+  &--locked-out {
+    --buzzer-color: #2a2d55;
+  }
+
+  &__button {
+    display: grid;
+    place-items: center;
+    width: min(200px, 60vw);
+    aspect-ratio: 1;
+    border: 6px solid rgb(255 255 255 / 0.15);
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 35% 30%, rgb(255 255 255 / 0.25), transparent 55%),
+      var(--buzzer-color);
+    box-shadow:
+      0 10px 10px rgb(0 0 0 / 0.25),
+      var(--pp-shadow);
+    color: var(--buzzer-text);
+    cursor: pointer;
+    transition:
+      transform 80ms,
+      box-shadow 80ms,
+      background 160ms;
+    touch-action: manipulation;
+
+    &:active:not(:disabled) {
+      transform: translateY(6px);
+      box-shadow:
+        0 4px 0 rgb(0 0 0 / 0.35),
+        var(--pp-shadow);
+    }
+
+    &:disabled {
+      cursor: default;
+    }
+
+    .buzzer--open & {
+      animation: buzzer-pulse 1s ease-in-out infinite;
+    }
+  }
+
+  &__label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
+  &__label-text {
+    font: 700 clamp(28px, 6vw, 40px) var(--pp-font-display);
+    letter-spacing: 0.08em;
+
+    &--in {
+      font-size: clamp(20px, 4.5vw, 28px);
+      letter-spacing: 0.02em;
+    }
+  }
+
+  // Seconds left on the head start / tiebreaker window, under "BUZZ".
+  &__timer {
+    font: 700 18px var(--pp-font-display);
+    font-variant-numeric: tabular-nums;
+    opacity: 0.9;
+  }
+
+  &__message {
+    margin: 0;
+    color: var(--pp-text-muted);
+    font-weight: 600;
+    text-align: center;
+
+    .buzzer--mine & {
+      color: var(--pp-value);
+    }
+  }
+}
+
+@keyframes buzzer-pulse {
+  50% {
+    box-shadow:
+      0 10px 0 rgb(0 0 0 / 0.35),
+      0 0 0 12px rgb(255 93 115 / 0.25);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .buzzer__button {
+    animation: none !important;
+  }
+}

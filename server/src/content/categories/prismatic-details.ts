@@ -1,0 +1,112 @@
+import { q, type CategoryPoolDef } from '../types.ts';
+
+/**
+ * Prismatic fine-detail categories. Sources: ProductDesignAI/knowledge
+ * (project_design_tokens, project_ux_decisions, project_scss_pattern, ds_*),
+ * ProductDesignAI/CLAUDE.md, Prismatic-Lens design-system-guidance skill,
+ * and prism_scss/scss/base/root/_root.scss.
+ */
+
+export const byTheNumbers: CategoryPoolDef = {
+  id: 'by-the-numbers',
+  title: 'By the Numbers',
+  description: 'Every answer is a number. Units count!',
+  type: 'text',
+  group: 'prismatic',
+  questions: [
+    q(1, 'The default font size, in pixels.', '16px (1rem)'),
+    q(1, 'The minimum font size allowed, in pixels.', '14px (0.875rem)'),
+    q(1, 'The most primary buttons allowed in one view.', 'Two'),
+    q(1, 'The most items a breadcrumb trail can show.', 'Three'),
+    q(2, 'The default border radius on buttons and inputs, in pixels.', '6px (.375rem)'),
+    q(2, 'The border radius on cards and container surfaces, in pixels.', '12px (.75rem)'),
+    q(2, 'The value of --base-margin, in pixels.', '24px (1.5rem)'),
+    q(2, 'The most buttons a Footer Bar can hold.', 'Five'),
+    q(3, 'The value of --base-padding, in pixels.', '16px (1rem)'),
+    q(3, 'The minimum line height, as a multiple of the font size.', '1.5'),
+    q(3, 'The gap between buttons in a button group, in pixels.', '8px'),
+    q(3, 'The largest step on the white-space spacing scale, in pixels.', '48px'),
+    q(4, 'The max width of a text input, also the settings table width, in pixels.', '685px (42.8125rem)'),
+    q(4, 'The max width of the Message modal size, in pixels.', '448px'),
+    q(4, 'The max width of the Default modal size, in pixels.', '600px'),
+    q(4, 'The gap between stacked toasts, in pixels.', '12px'),
+    q(5, 'The z-index of toasts.', '9999'),
+    q(5, 'The fixed width of the Grid modal, in pixels.', '1015px'),
+    q(5, 'The size of the large checkbox used in tables and on mobile, in pixels.', '28 × 28'),
+    q(5, 'The max width of the Form modal size, in pixels.', '717px'),
+  ],
+  dailyDoubles: [
+    q(3, "The value of --max-text-width.", "80ch"),
+    q(3, "The 685px text-input max width fits about this many characters.", "About 80"),
+    q(4, "The duration in the --transition token.", "0.3 seconds"),
+    q(4, "The line height the font-size mixin gives its default 16px size, in pixels.", "24px"),
+    q(5, "The top and bottom margins of a base h2, in pixels.", "50px top and 40px bottom"),
+    q(5, "The font size of large call-to-action links (a.large-cta), in pixels.", "30px"),
+  ],
+};
+
+export const rulesOfStyle: CategoryPoolDef = {
+  id: 'rules-of-style',
+  title: 'Rules of Style',
+  description: 'Naming, tokens, and the CSS house rules.',
+  type: 'text',
+  group: 'prismatic',
+  questions: [
+    q(1, 'The font family used for body text.', 'Open Sans'),
+    q(1, 'The font family used for headers.', 'Lato'),
+    q(1, 'What the "-ns" suffix on components like button-base-ns signals.', 'The new, preferred (non-Syncfusion) version'),
+    q(2, 'The class pair that replaces the deprecated "btn btn-primary".', 'button button--primary'),
+    q(2, 'The unit you use in SCSS instead of hardcoded px.', 'rem (px ÷ 16)'),
+    q(2, 'What a "-deprecated" suffix on a component tells you.', "Don't use it; switch to its replacement"),
+    q(3, 'How you fix a double BEM descendant like block__el__el.', 'Flatten it to block__el-sub'),
+    q(3, 'Can a button with a text label also have an icon?', 'No. Only icon-only buttons and the AI button use icons'),
+    q(3, 'Lato is used for headers at this font size and above.', '24px'),
+    q(4, 'The button style for secondary actions in a form.', 'Ghost'),
+    q(4, 'The button style for tertiary actions that still need some prominence.', 'Outline'),
+    q(4, 'The gray color token that is banned unless someone explicitly asks for it.', '--gray-link'),
+    q(5, 'In employee forms, the color used for focus and required indicators.', 'Blue'),
+    q(5, 'The two components that replace card-deprecated.', 'dashboard-card or settings-table'),
+    q(5, 'The name of the custom icon font.', 'prism_custom'),
+  ],
+  dailyDoubles: [
+    q(3, "The class prefix for custom icons.", "prism-icons-"),
+    q(3, "The font weight value of the --medium token.", "600"),
+    q(4, "The font weight value of the --black token.", "900"),
+    q(4, "The component that replaces input-signature-deprecated.", "Signature Pad"),
+    q(5, "Name all six steps of the white-space spacing scale, in pixels.", "4, 8, 16, 24, 32, 48"),
+    q(5, "Name four of the nine banned Bootstrap-style classes.", "Any four of: btn, btn-primary, card-header, card-body, form-group, form-control, text-muted, pull-left, pull-right"),
+  ],
+};
+
+export const patternsAndPlacement: CategoryPoolDef = {
+  id: 'patterns-placement',
+  title: 'Patterns & Placement',
+  description: 'Where things go and how they behave.',
+  type: 'text',
+  group: 'prismatic',
+  questions: [
+    q(1, 'Where on the screen toasts appear.', 'Top center'),
+    q(1, 'Which side of a button group the primary button goes on.', 'The right'),
+    q(1, 'How many modals can be layered on top of each other.', 'None. Never layer modals'),
+    q(2, 'Modal titles should be written as these, not as questions.', 'Statements'),
+    q(2, 'Breadcrumbs only appear after you do this, never on landing pages.', 'Enter a workflow (New or Edit)'),
+    q(2, 'Where the required-field asterisk goes.', 'To the right of the label'),
+    q(3, 'Radio buttons are for a choice between how many options?', 'Two to four'),
+    q(3, 'The default control for a required single choice.', 'A dropdown (select)'),
+    q(3, 'What replaces "Next" on the final step of a stepper.', '"Submit" or "Finish"'),
+    q(4, 'Footer buttons from left to right.', 'Ancillary, Secondary, Primary'),
+    q(4, 'Where Stepper navigation goes.', 'In the footer'),
+    q(4, 'Checkbox or toggle: which one is for a binary on/off state?', 'Toggle (checkboxes are for selection)'),
+    q(5, 'The required format for input placeholders.', 'A verb + "a/an" + the field name, e.g. "Enter a…"'),
+    q(5, 'This page is never the first item in a breadcrumb trail.', 'Dashboard'),
+    q(5, 'Name the three approved header utilities.', 'Messages, Notices, and Language'),
+  ],
+  dailyDoubles: [
+    q(3, "How far below the top of the screen toasts sit on mobile, in pixels.", "16px"),
+    q(3, "What the Message Drawer does when messages overflow.", "Scrolls vertically"),
+    q(4, "What sits at the very bottom of the User Drawer.", "Version info"),
+    q(4, "Where a QR code goes in the User Drawer when mobile login is needed.", "Near the bottom"),
+    q(5, "Name the four optional bulk actions in a Tree Menu.", "Select All, Deselect All, Expand All, Collapse All"),
+    q(5, "Modals should never be used for these three things.", "Complex tables, long content, and stepper flows"),
+  ],
+};
